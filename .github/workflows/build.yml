@@ -2,6 +2,9 @@ name: Build and publish Docker image
 
 on: [push]
 
+env:
+  IMAGE_NAME: hello-world
+
 jobs:
   build:
     runs-on: ubuntu-latest
