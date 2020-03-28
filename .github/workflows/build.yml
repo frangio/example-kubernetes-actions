@@ -17,7 +17,7 @@ jobs:
 
       - name: Push image
         run: |
-          set -o errexit -o nounset
+          set -o errexit -o nounset -o pipefail
 
           IMAGE_ID="$(echo "docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME" | tr [:upper:] [:lower:])"
 
