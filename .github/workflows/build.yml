@@ -1,0 +1,38 @@
+on: [push]
+
+jobs:
+  build:
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build . --tag image
+
+      - name: Log into registry
+        run: echo "${{ github.token }}" | docker login docker.pkg.github.com -u "${{ github.actor }}" --password-stdin
+
+      - name: Push image
+        run: |
+          set -o errexit -o nounset
+
+          IMAGE_ID="$(echo "docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME" | tr [:upper:] [:lower:])"
+
+          case "${{ github.ref }}" in
+            refs/heads/master)
+              IMAGE_TAG=latest
+              ;;
+
+            refs/heads/*)
+              IMAGE_TAG="$(echo "${{ github.ref }}" | sed -e 's|refs/heads/||')"
+              ;;
+
+            refs/tags/*)
+              IMAGE_TAG="$(echo "${{ github.ref }}" | sed -e 's|refs/tags/v\?||')"
+              ;;
+          esac
+
+          echo IMAGE_ID="$IMAGE_ID"
+          echo IMAGE_TAG="$IMAGE_TAG"
+
+          docker tag image "$IMAGE_ID:$IMAGE_TAG"
+          docker push "$IMAGE_ID:$IMAGE_TAG"
