@@ -23,20 +23,7 @@ jobs:
           set -o errexit -o nounset -o pipefail
 
           IMAGE_ID="$(echo "docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME" | tr [:upper:] [:lower:])"
-
-          case "${{ github.ref }}" in
-            refs/heads/master)
-              IMAGE_TAG=latest
-              ;;
-
-            refs/heads/*)
-              IMAGE_TAG="$(echo "${{ github.ref }}" | sed -e 's|refs/heads/||')"
-              ;;
-
-            refs/tags/*)
-              IMAGE_TAG="$(echo "${{ github.ref }}" | sed -e 's|refs/tags/v\?||')"
-              ;;
-          esac
+          IMAGE_TAG="${{ github.sha }}"
 
           echo IMAGE_ID="$IMAGE_ID"
           echo IMAGE_TAG="$IMAGE_TAG"
