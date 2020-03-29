@@ -3,8 +3,7 @@ name: Build and publish Docker image
 on: [push]
 
 env:
-  IMAGE_NAME: hello-world
-  IMAGE_ID: "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}"
+  IMAGE_ID: "docker.pkg.github.com/${{ github.repository }}/hello-world"
   IMAGE_TAG: "${{ github.sha }}"
 
 jobs:
