@@ -30,7 +30,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: '${{ github.repository }}-infrastructure-staging'
+          repository: "${{ github.repository }}-infrastructure-staging"
+          token: "${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}"
 
       - name: Patch Kubernetes manifest
         run: |
@@ -39,3 +40,8 @@ jobs:
           kustomize edit add resource manifest.yaml
           kustomize edit set image "$IMAGE_ID:$IMAGE_TAG"
           kustomize build -o manifest.yaml
+
+      - name: Commit and push patched manifest
+        run: |
+          git commit manifest.yaml -m "Update image to $IMAGE_TAG"
+          git push origin master
