@@ -4,11 +4,12 @@ on: [push]
 
 env:
   IMAGE_NAME: hello-world
+  IMAGE_ID: "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}"
+  IMAGE_TAG: "${{ github.sha }}"
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
 
@@ -21,12 +22,21 @@ jobs:
       - name: Push image
         run: |
           set -o errexit -o nounset -o pipefail
-
-          IMAGE_ID="$(echo "docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME" | tr [:upper:] [:lower:])"
-          IMAGE_TAG="${{ github.sha }}"
-
-          echo IMAGE_ID="$IMAGE_ID"
-          echo IMAGE_TAG="$IMAGE_TAG"
-
           docker tag image "$IMAGE_ID:$IMAGE_TAG"
           docker push "$IMAGE_ID:$IMAGE_TAG"
+
+  update-infrastructure:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: '${{ github.repository }}-infrastructure-staging'
+
+      - name: Patch Kubernetes manifest
+        run: |
+          set -o errexit -o nounset -o pipefail
+          touch kustomization.yaml
+          kustomize edit add resource manifest.yaml
+          kustomize edit set image "$IMAGE_ID:$IMAGE_TAG"
+          kustomize build -o manifest.yaml
