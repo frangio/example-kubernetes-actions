@@ -27,6 +27,7 @@ jobs:
   update-infrastructure:
     needs: build
     runs-on: ubuntu-latest
+    if: ${{ github.ref }} == refs/heads/master
     env:
       KUSTOMIZE_VERSION: v3.5.4
     steps:
