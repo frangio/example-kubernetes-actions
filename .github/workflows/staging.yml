@@ -51,5 +51,8 @@ jobs:
 
       - name: Commit and push patched manifest
         run: |
+          curl -u "${{ github.actor }}:${{ github.token }}" "https://api.github.com/users/${{ github.actor }}" > user.json
+          git config user.name "$(jq -r .name user.json)"
+          git config user.email "$(jq -r .email user.json)"
           git commit manifest.yaml -m "Update image to $IMAGE_TAG"
           git push origin master
