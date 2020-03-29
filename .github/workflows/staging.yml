@@ -38,19 +38,24 @@ jobs:
 
       - uses: actions/checkout@v2
         with:
+          path: source
+
+      - uses: actions/checkout@v2
+        with:
+          path: infra-staging
           repository: "${{ github.repository }}-infrastructure-staging"
           ssh-key: "${{ secrets.STAGING_SSH_KEY }}"
 
       - name: Patch Kubernetes manifest
         run: |
           set -o errexit -o nounset -o pipefail
-          touch kustomization.yaml
-          kustomize edit add resource manifest.yaml
+          cd source/infra
           kustomize edit set image "$IMAGE_ID:$IMAGE_TAG"
-          kustomize build -o manifest.yaml
+          kustomize build -o "$GITHUB_WORKSPACE/infra-staging/manifest.yaml"
 
       - name: Commit and push patched manifest
         run: |
+          cd infra-staging
           curl -K - "https://api.github.com/users/${{ github.actor }}" > user.json <<< "-u ${{ github.actor }}:${{ github.token }}"
           git config user.name "$(jq -r .name user.json)"
           git config user.email "$(jq -r .email user.json)"
