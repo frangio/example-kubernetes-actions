@@ -32,8 +32,6 @@ jobs:
     env:
       KUSTOMIZE_VERSION: v3.5.4
     steps:
-      - uses: ./.github/actions/install-kustomize
-
       - uses: actions/checkout@v2
         with:
           path: source
@@ -43,6 +41,8 @@ jobs:
           path: infra-staging
           repository: "${{ github.repository }}-infrastructure-staging"
           ssh-key: "${{ secrets.STAGING_SSH_KEY }}"
+
+      - uses: ./source/.github/actions/install-kustomize
 
       - name: Patch Kubernetes manifest
         run: |
