@@ -55,14 +55,12 @@ jobs:
           kustomize edit set image "$IMAGE_NAME=$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
           kustomize build -o "$GITHUB_WORKSPACE/infra-staging/manifest.yaml"
 
-      - name: Fetch commit author
-        run: |
-          cd source
-          AUTHOR="$(git show -s --format='%an <%ae>')"
-          echo ::set-env name=AUTHOR::"$AUTHOR"
-
       - name: Commit and push patched manifest
         run: |
+          AUTHOR_NAME="$(git -C source show -s --format='%an')"
+          AUTHOR_EMAIL="$(git -C source show -s --format='%ae')"
           cd infra-staging
-          git commit --author "$AUTHOR" manifest.yaml -m "Update image to $IMAGE_TAG"
+          git config user.name "$AUTHOR_NAME"
+          git config user.email "$AUTHOR_EMAIL"
+          git commit manifest.yaml -m "Update image to $IMAGE_TAG"
           git push origin master
