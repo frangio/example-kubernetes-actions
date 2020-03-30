@@ -32,26 +32,29 @@ jobs:
     env:
       KUSTOMIZE_VERSION: v3.5.4
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out source
+        uses: actions/checkout@v2
         with:
           path: source
 
-      - uses: actions/checkout@v2
+      - name: Check out staging configuration
+        uses: actions/checkout@v2
         with:
           path: infra-staging
           repository: "${{ github.repository }}-infrastructure-staging"
           ssh-key: "${{ secrets.STAGING_SSH_KEY }}"
 
-      - uses: ./source/.github/actions/install-kustomize
+      - name: Install Kustomize
+        uses: ./source/.github/actions/install-kustomize
 
-      - name: Patch Kubernetes manifest
+      - name: Apply updated customization
         run: |
           set -o errexit -o nounset -o pipefail
           cd source/infra
           kustomize edit set image "$IMAGE_NAME=$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
           kustomize build -o "$GITHUB_WORKSPACE/infra-staging/manifest.yaml"
 
-      - name: Commit and push patched manifest
+      - name: Commit and push updated configuration
         run: |
           AUTHOR_NAME="$(git -C source show -s --format='%an')"
           AUTHOR_EMAIL="$(git -C source show -s --format='%ae')"
