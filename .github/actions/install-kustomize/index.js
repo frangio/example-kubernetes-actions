@@ -1,5 +1,5 @@
-const core = require('@actions/core');
-const tc = require('@actions/tool-cache');
+import core from '@actions/core';
+import tc from '@actions/tool-cache';
 
 const version = '3.5.4';
 
