@@ -3,7 +3,8 @@ name: Staging
 on: [push]
 
 env:
-  IMAGE_ID: "docker.pkg.github.com/${{ github.repository }}/hello-world"
+  REGISTRY: "docker.pkg.github.com/${{ github.repository }}"
+  IMAGE_NAME: "hello-world"
   IMAGE_TAG: "${{ github.sha }}"
 
 jobs:
@@ -21,8 +22,8 @@ jobs:
       - name: Push image
         run: |
           set -o errexit -o nounset -o pipefail
-          docker tag image "$IMAGE_ID:$IMAGE_TAG"
-          docker push "$IMAGE_ID:$IMAGE_TAG"
+          docker tag image "$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
+          docker push "$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
 
   update-infrastructure:
     needs: build
@@ -51,7 +52,7 @@ jobs:
         run: |
           set -o errexit -o nounset -o pipefail
           cd source/infra
-          kustomize edit set image "$IMAGE_ID:$IMAGE_TAG"
+          kustomize edit set image "$IMAGE_NAME=$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
           kustomize build -o "$GITHUB_WORKSPACE/infra-staging/manifest.yaml"
 
       - name: Commit and push patched manifest
