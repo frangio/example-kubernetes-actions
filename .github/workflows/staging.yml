@@ -62,5 +62,5 @@ jobs:
           cd infra-staging
           git config user.name "$AUTHOR_NAME"
           git config user.email "$AUTHOR_EMAIL"
-          git commit manifest.yaml -m "Update image to $IMAGE_TAG"
+          git commit manifest.yaml -m "Update configuration for $IMAGE_TAG"
           git push origin master
