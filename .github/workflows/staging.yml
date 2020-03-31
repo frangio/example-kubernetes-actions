@@ -22,7 +22,7 @@ jobs:
         run: |
           PARENT_SHA="$(git rev-parse HEAD^1 --)"
           echo "$REGISTRY/$IMAGE_NAME:$PARENT_SHA"
-          docker pull "$REGISTRY/$IMAGE_NAME:$PARENT_SHA"
+          docker pull "$REGISTRY/$IMAGE_NAME:$PARENT_SHA" || true
 
       - name: Build image
         run: docker build . --tag image
