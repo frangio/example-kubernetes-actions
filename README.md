@@ -6,6 +6,8 @@ Registry.
 
 [A separate repository][infra-staging] contains the Kubernetes configuration
 for a staging environment. On pushes to `master` this configuration is updated
-to use the new image.
+to use the new image. This repository can be monitored by something like [Flux]
+to automatically update a running Kubernetes cluster.
 
 [infra-staging]: https://github.com/frangio/example-kubernetes-actions-infrastructure-staging
+[Flux]: https://fluxcd.io/
