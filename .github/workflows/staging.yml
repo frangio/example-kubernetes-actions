@@ -43,7 +43,7 @@ jobs:
           ssh-key: "${{ secrets.STAGING_SSH_KEY }}"
 
       - name: Install Kustomize
-        uses: ./source/.github/actions/install-kustomize
+        uses: frangio/setup-kustomize@v1
 
       - name: Apply updated customization
         run: |

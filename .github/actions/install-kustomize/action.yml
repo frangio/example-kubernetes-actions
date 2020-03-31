@@ -1,4 +1,0 @@
-name: Install Kustomize
-runs:
-  using: node12
-  main: bundle.js
