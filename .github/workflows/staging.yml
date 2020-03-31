@@ -21,7 +21,6 @@ jobs:
 
       - name: Push image
         run: |
-          set -o errexit -o nounset -o pipefail
           docker tag image "$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
           docker push "$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
 
@@ -47,7 +46,6 @@ jobs:
 
       - name: Apply updated customization
         run: |
-          set -o errexit -o nounset -o pipefail
           cd source/infra
           kustomize edit set image "$IMAGE_NAME=$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
           kustomize build -o "$GITHUB_WORKSPACE/infra-staging/manifest.yaml"
