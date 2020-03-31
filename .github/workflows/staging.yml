@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
 
       - name: Log into registry
         run: docker login docker.pkg.github.com -u "${{ github.actor }}" --password-stdin <<< "${{ github.token }}"
