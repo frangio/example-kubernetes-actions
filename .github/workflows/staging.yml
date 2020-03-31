@@ -13,11 +13,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build image
-        run: docker build . --tag image
-
       - name: Log into registry
         run: docker login docker.pkg.github.com -u "${{ github.actor }}" --password-stdin <<< "${{ github.token }}"
+
+      - name: Pull previous image from registry
+        run: |
+          PARENT_SHA="$(git rev-parse HEAD^1 --)"
+          docker pull "$REGISTRY/$IMAGE_NAME:$PARENT_SHA"
+
+      - name: Build image
+        run: docker build . --tag image
 
       - name: Push image
         run: |
