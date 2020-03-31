@@ -21,6 +21,7 @@ jobs:
       - name: Pull previous image from registry
         run: |
           PARENT_SHA="$(git rev-parse HEAD^1 --)"
+          echo "$REGISTRY/$IMAGE_NAME:$PARENT_SHA"
           docker pull "$REGISTRY/$IMAGE_NAME:$PARENT_SHA"
 
       - name: Build image
