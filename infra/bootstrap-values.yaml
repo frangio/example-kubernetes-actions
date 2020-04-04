@@ -1,0 +1,5 @@
+git:
+  url: git@github.com:frangio/example-kubernetes-actions-infrastructure-staging
+
+helm:
+  versions: v3
