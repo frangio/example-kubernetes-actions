@@ -1,5 +1,3 @@
-# https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/provider/cloud-generic.yaml
-
 kind: Service
 apiVersion: v1
 metadata:

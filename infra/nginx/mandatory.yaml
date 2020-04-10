@@ -1,5 +1,3 @@
-# https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/mandatory.yaml
-
 apiVersion: v1
 kind: Namespace
 metadata:
