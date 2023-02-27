@@ -12,12 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Build image
-        run: docker build . --tag image
+        with:
+          fetch-depth: 2
 
       - name: Log into registry
         run: docker login docker.pkg.github.com -u "${{ github.actor }}" --password-stdin <<< "${{ github.token }}"
+
+      - name: Pull previous image from registry
+        run: |
+          PARENT_SHA="$(git rev-parse HEAD^1)"
+          PARENT_IMAGE="$REGISTRY/$IMAGE_NAME:$PARENT_SHA"
+          echo "::set-env name=PARENT_IMAGE::$PARENT_IMAGE"
+          docker pull "$REGISTRY/$IMAGE_NAME:$PARENT_SHA" || true
+
+      - name: Build image
+        run: docker build . --tag image --cache-from "$PARENT_IMAGE"
 
       - name: Push image
         run: |
